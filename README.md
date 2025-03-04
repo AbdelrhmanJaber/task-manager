@@ -1,7 +1,1 @@
-# nodejs-apis-playground
-
-## Tasks API
-
-## Jobs API
-
-## Products API
+# task-manager-server-side

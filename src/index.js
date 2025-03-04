@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import dbConnect from "./config/db_connection.js";
 import taskRouter from "./routes/tasks_routes.js";
+import https_status from "./utils/https_status.js";
 
 dotenv.config();
 
@@ -12,6 +13,25 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/tasks", taskRouter);
+
+//global error handler for not found routes
+
+app.all("*", (req, res, next) => {
+  return res.status(404).json({
+    status: https_status.ERROR,
+    message: "This resourse is not available",
+  });
+});
+
+//global error handler
+app.use((error, req, res, next) => {
+  res.status(error.status || 500).json({
+    status: error.statusText || https_status.ERROR,
+    message: error.message,
+    code: error.status || 500,
+    data: null,
+  });
+});
 
 await dbConnect();
 app.listen(process.env.PORT, () => {

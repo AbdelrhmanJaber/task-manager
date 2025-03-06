@@ -1,6 +1,6 @@
+import { validationResult } from "express-validator";
 import Task from "../models/task.js";
 import appError from "../utils/app_error.js";
-import { validationResult } from "express-validator";
 import httpStatus from "../utils/https_status.js";
 
 const handleInvalidTaskID = (error, next) => {

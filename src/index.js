@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import dbConnect from "./config/db_connection.js";
 import taskRouter from "./routes/tasks_routes.js";
+import userRouter from "./routes/user_routes.js";
 import https_status from "./utils/https_status.js";
 
 dotenv.config();
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/tasks", taskRouter);
-
+app.use("/api/users", userRouter);
 //global error handler for not found routes
 
 app.all("*", (req, res, next) => {

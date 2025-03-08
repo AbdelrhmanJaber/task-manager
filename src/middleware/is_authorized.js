@@ -1,5 +1,5 @@
-import appError from "../utils/app_error";
-import httpsStatus from "../utils/https_status";
+import appError from "../utils/app_error.js";
+import httpsStatus from "../utils/https_status.js";
 
 const isAuthorized = (...roles) => {
   return (req, res, next) => {
@@ -12,6 +12,7 @@ const isAuthorized = (...roles) => {
         )
       );
     }
+    next();
   };
 };
 

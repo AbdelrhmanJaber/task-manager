@@ -79,16 +79,16 @@ const updateUser = async (req, res, next) => {
     return next(appError.createError(errors.array(), 400, httpStatus.FAIL));
   try {
     const userID = req.params.userID;
-    const updatedUser = await User.findByIdAndUpdate(
-      userID,
-      { $set: req.body },
-      { new: true, runValidators: true }
-    );
+    const updatedUser = await User.findById(userID);
     if (!updatedUser) {
       return next(
         appError.createError("This User is not found", 404, httpStatus.ERROR)
       );
     }
+    Object.assign(updatedUser, req.body);
+    if (req.body.password)
+      updatedUser.password = await bcrypt.hash(req.body.password, 10);
+    await updatedUser.save();
     res
       .status(200)
       .json({ status: httpStatus.SUCCESS, user_after_update: updatedUser });

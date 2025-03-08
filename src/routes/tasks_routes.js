@@ -10,12 +10,24 @@ const { getTask, getAllTasks, updateTask, createTask, deleteTask } =
 
 const router = Router();
 
-router.route("/").get(getAllTasks).post(taskValidationSchemaFunc(), createTask);
+router
+  .route("/")
+  .get(getAllTasks)
+  .post(
+    taskValidationSchemaFunc(),
+    verifyToken,
+    isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
+    createTask
+  );
 
 router
   .route("/:taskID")
   .get(getTask)
-  .patch(updateTask)
+  .patch(
+    verifyToken,
+    isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
+    updateTask
+  )
   .delete(
     verifyToken,
     isAuthorized(userRoles.ADMIN, userRoles.MANAGER),

@@ -4,6 +4,9 @@ import {
   userCreateValidation,
   userUpdateValidation,
 } from "../middleware/user_validation_schema.js";
+import userRoles from "../utils/user_roles.js";
+import verifyToken from "../middleware/verify_token.js";
+import isAuthorized from "../middleware/is_authorized.js";
 
 const { getAllUsers, getUser, userRegister, updateUser, login, deleteUser } =
   userControllers;
@@ -19,7 +22,16 @@ router.route("/login").post(login);
 router
   .route("/:userID")
   .get(getUser)
-  .patch(userUpdateValidation(), updateUser)
-  .delete(deleteUser);
+  .patch(
+    verifyToken,
+    isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
+    userUpdateValidation(),
+    updateUser
+  )
+  .delete(
+    verifyToken,
+    isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
+    deleteUser
+  );
 
 export default router;

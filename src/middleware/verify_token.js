@@ -14,7 +14,6 @@ const verifyToken = (req, res, next) => {
   try {
     const currentUser = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.currentUser = currentUser; //to be authorized in the next middleware or next route
-    //res.json({ test: "test" });
     next();
   } catch (error) {
     return next(appError.createError("Invalid Token", 401, httpStatus.ERROR));

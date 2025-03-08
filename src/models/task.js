@@ -12,6 +12,7 @@ const taskSchema = mongoose.Schema(
     },
     description: {
       type: String,
+      required: true,
     },
     status: {
       type: String,
@@ -25,7 +26,17 @@ const taskSchema = mongoose.Schema(
       default: taskPriority.MEDIUM,
       index: true,
     },
-    dueDate: { type: Date, index: true },
+    dueDate: {
+      type: Date,
+      index: true,
+      required: true,
+    },
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
   },
   { timestamps: true }
 );

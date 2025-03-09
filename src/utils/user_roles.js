@@ -1,7 +1,7 @@
 const userRoles = {
   ADMIN: "ADMIN",
   MANAGER: "MANAGER",
-  EMPLOYEE: "Empolyee",
+  EMPLOYEE: "Employee",
   VIEWER: "Viewer",
 };
 

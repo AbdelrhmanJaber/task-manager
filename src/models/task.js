@@ -2,6 +2,7 @@ import { Timestamp } from "bson";
 import mongoose from "mongoose";
 import { taskStatus } from "../utils/task_status.js";
 import { taskPriority } from "../utils/task_priority.js";
+import { categoryTypes } from "../utils/category_types.js";
 
 const taskSchema = mongoose.Schema(
   {
@@ -37,6 +38,25 @@ const taskSchema = mongoose.Schema(
       required: true,
       index: true,
     },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      enum: [
+        categoryTypes.GENERAL,
+        categoryTypes.MEETING,
+        categoryTypes.PERSONAL,
+        categoryTypes.URGENT,
+        categoryTypes.WORK,
+      ],
+      ref: "Category",
+      index: true,
+      required: true,
+    },
+    tags: [
+      {
+        type: String, // Array of strings for tags
+        trim: true,
+      },
+    ],
   },
   { timestamps: true }
 );

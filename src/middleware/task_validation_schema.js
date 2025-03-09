@@ -2,6 +2,7 @@ import { body } from "express-validator";
 import { taskStatus } from "../utils/task_status.js";
 import { taskPriority } from "../utils/task_priority.js";
 import User from "../models/user.js";
+import mongoose from "mongoose";
 
 const allowedStatus = Object.values(taskStatus);
 const allowedPriority = Object.values(taskPriority);
@@ -33,17 +34,15 @@ const taskValidationSchemaFunc = () => {
       ),
     body("assignedTo")
       .notEmpty()
-      .withMessage("Assigned to (email) is required")
-      .isEmail()
-      .withMessage("Invalid email format")
-      .custom(async (email, { req }) => {
-        const user = await User.findOne({ email });
-        if (!user) {
-          return Promise.reject(
-            new Error("User with this email does not exist")
-          );
+      .withMessage("Assigned to (user_id) is required")
+      .custom(async (value) => {
+        if (!mongoose.Types.ObjectId.isValid(value)) {
+          return Promise.reject(new Error("Invalid User ID format"));
         }
-        req.body.assignedTo = user._id;
+        const user = await User.findById(value);
+        if (!user) {
+          return Promise.reject(new Error("This User is not found"));
+        }
         return true;
       }),
   ];

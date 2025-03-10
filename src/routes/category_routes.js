@@ -38,3 +38,5 @@ router
     isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
     deleteCategory
   );
+
+export default router;

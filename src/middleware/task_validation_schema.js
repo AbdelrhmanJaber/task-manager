@@ -2,6 +2,7 @@ import { body } from "express-validator";
 import { taskStatus } from "../utils/task_status.js";
 import { taskPriority } from "../utils/task_priority.js";
 import User from "../models/user.js";
+import Category from "../models/category.js";
 import mongoose from "mongoose";
 
 const allowedStatus = Object.values(taskStatus);
@@ -42,6 +43,19 @@ const taskValidationSchemaFunc = () => {
         const user = await User.findById(value);
         if (!user) {
           return Promise.reject(new Error("This User is not found"));
+        }
+        return true;
+      }),
+    body("category")
+      .notEmpty()
+      .withMessage("Category is required")
+      .custom(async (value) => {
+        if (!mongoose.Types.ObjectId.isValid(value)) {
+          return Promise.reject(new Error("Invalid Category ID format"));
+        }
+        const user = await Category.findById(value);
+        if (!user) {
+          return Promise.reject(new Error("This Category is not found"));
         }
         return true;
       }),

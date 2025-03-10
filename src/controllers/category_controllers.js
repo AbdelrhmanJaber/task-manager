@@ -1,4 +1,5 @@
 import Category from "../models/category.js";
+import Task from "../models/task.js";
 import appError from "../utils/app_error.js";
 import httpStatus from "../utils/https_status.js";
 import { validationResult } from "express-validator";
@@ -36,7 +37,7 @@ const getAllCategories = async (req, res, next) => {
     const categories = await Category.find().lean();
     if (categories.length === 0) {
       return next(
-        appError.createError("No Tasks in database", 404, httpStatus.FAIL)
+        appError.createError("No Categories in database", 404, httpStatus.FAIL)
       );
     }
     return res
@@ -53,7 +54,7 @@ const createCategory = async (req, res, next) => {
     return next(appError.createError(errors.array(), 400, httpStatus.FAIL));
 
   try {
-    const newCategory = await Task.create(req.body);
+    const newCategory = await Category.create(req.body);
     res
       .status(200)
       .json({ status: httpStatus.SUCCESS, new_category: newCategory });
@@ -101,6 +102,7 @@ const deleteCategory = async (req, res, next) => {
         )
       );
     } else {
+      await Task.deleteMany({ category: categoryID });
       res.status(200).json({
         status: httpStatus.SUCCESS,
         msg: `Category with ID : ${categoryID} is deleted`,

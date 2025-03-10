@@ -4,6 +4,7 @@ import cors from "cors";
 import dbConnect from "./config/db_connection.js";
 import taskRouter from "./routes/tasks_routes.js";
 import userRouter from "./routes/user_routes.js";
+import categoryRouter from "./routes/category_routes.js";
 import https_status from "./utils/https_status.js";
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/api/tasks", taskRouter);
 app.use("/api/users", userRouter);
+app.use("/api/category", categoryRouter);
 //global error handler for not found routes
 
 app.all("*", (req, res, next) => {

@@ -3,6 +3,7 @@ import Task from "../models/task.js";
 import appError from "../utils/app_error.js";
 import httpStatus from "../utils/https_status.js";
 import { validationResult } from "express-validator";
+import categoryServices from "../services/category_services.js";
 
 const handleInvalidCategoryID = (error, next) => {
   if (error.name === "CastError")
@@ -14,16 +15,9 @@ const handleInvalidCategoryID = (error, next) => {
 
 const getCategoryByID = async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.categoryID);
-    if (!category)
-      return next(
-        appError.createError(
-          "This category is not found",
-          404,
-          httpStatus.ERROR
-        )
-      );
-
+    const category = await categoryServices.getCategoryByID(
+      req.params.categoryID
+    );
     return res
       .status(200)
       .json({ status: httpStatus.SUCCESS, category: category });
@@ -34,17 +28,14 @@ const getCategoryByID = async (req, res, next) => {
 
 const getAllCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find().lean();
-    if (categories.length === 0) {
-      return next(
-        appError.createError("No Categories in database", 404, httpStatus.FAIL)
-      );
-    }
+    const categories = await categoryServices.getAllCategories();
     return res
       .status(200)
       .json({ status: httpStatus.SUCCESS, categories: categories });
   } catch (error) {
-    return next(appError.createError(error.message, 500, httpStatus.ERROR));
+    return next(
+      appError.createError(error.message, error.status, httpStatus.ERROR)
+    );
   }
 };
 
@@ -54,35 +45,24 @@ const createCategory = async (req, res, next) => {
     return next(appError.createError(errors.array(), 400, httpStatus.FAIL));
 
   try {
-    const newCategory = await Category.create(req.body);
+    const newCategory = await categoryServices.getAllCategories();
     res
       .status(200)
       .json({ status: httpStatus.SUCCESS, new_category: newCategory });
   } catch (error) {
-    next(appError.createError(error.message, 500, httpStatus.ERROR));
+    next(appError.createError(error.message, error.status, httpStatus.ERROR));
   }
 };
 
 const updateCategory = async (req, res, next) => {
   try {
-    const categoryID = req.params.categoryID;
-    const updateCategory = await Category.findByIdAndUpdate(
-      categoryID,
-      { $set: req.body },
-      { new: true, runValidators: true }
+    const updatedCategory = categoryServices.updateCategory(
+      req.params.categoryID,
+      req.body
     );
-    if (!updateCategory) {
-      return next(
-        appError.createError(
-          "This Category is not found",
-          404,
-          httpStatus.ERROR
-        )
-      );
-    }
     res.status(200).json({
       status: httpStatus.SUCCESS,
-      category_after_update: updateCategory,
+      category_after_update: updatedCategory,
     });
   } catch (error) {
     handleInvalidCategoryID(error, next);
@@ -90,24 +70,14 @@ const updateCategory = async (req, res, next) => {
 };
 
 const deleteCategory = async (req, res, next) => {
-  const categoryID = req.params.categoryID;
   try {
-    const deletedCategory = await Category.findByIdAndDelete(categoryID);
-    if (!deletedCategory) {
-      return next(
-        appError.createError(
-          "This Category is not found",
-          404,
-          httpStatus.ERROR
-        )
-      );
-    } else {
-      await Task.deleteMany({ category: categoryID });
-      res.status(200).json({
-        status: httpStatus.SUCCESS,
-        msg: `Category with ID : ${categoryID} is deleted`,
-      });
-    }
+    const deletedCategory = await categoryServices.deleteCategory(
+      req.params.categoryID
+    );
+    res.status(200).json({
+      status: httpStatus.SUCCESS,
+      msg: `Category with ID : ${req.params.categoryID} is deleted`,
+    });
   } catch (error) {
     handleInvalidCategoryID(error, next);
   }

@@ -57,6 +57,7 @@ const taskSchema = mongoose.Schema(
         trim: true,
       },
     ],
+    Subtask: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subtask" }],
   },
   { timestamps: true }
 );

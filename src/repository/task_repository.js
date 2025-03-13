@@ -1,33 +1,21 @@
 import Task from "../models/task.js";
+import Subtask from "../models/subtask.js";
+import baseTaskRepository from "./base_task_repository.js";
 
-class taskRepository {
-  static async getTaskByID(taskID) {
-    return await Task.findById(taskID);
+class taskRepository extends baseTaskRepository {
+  constructor() {
+    super(Task);
   }
 
-  static async getAllTasks() {
-    return await Task.find().lean();
+  //delete all subtasks that belong this task
+  async deleteTaskAndSubtasks(taskID) {
+    await Subtask.deleteMany({ task: taskID });
+    return await this.model.findByIdAndDelete(taskID);
   }
 
-  static async createTask(newTask) {
-    return await Task.create(newTask);
-  }
-
-  static async updateTask(taskID, updatedTask) {
-    return await Task.findByIdAndUpdate(
-      taskID,
-      { $set: updatedTask },
-      { new: true, runValidators: true }
-    );
-  }
-
-  static async deleteTask(taskID) {
-    return await Task.findByIdAndDelete(taskID);
-  }
-
-  static async deleteTasksOfCategory(categoryID) {
-    return await Task.deleteMany({ category: categoryID });
+  async deleteTasksOfCategory(categoryID) {
+    return await this.model.deleteMany({ category: categoryID });
   }
 }
 
-export default taskRepository;
+export default new taskRepository();

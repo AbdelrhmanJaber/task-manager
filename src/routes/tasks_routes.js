@@ -1,37 +1,37 @@
 import { Router } from "express";
-import taskContoller from "../controllers/tasks_controllers.js";
-import taskValidationSchemaFunc from "../middleware/task_validation_schema.js";
+import TaskController from "../controllers/task_controllers.js";
+import taskValidationSchema from "../middleware/task_validation_schema.js";
+import validation_request from "../middleware/validation_request.js";
 import verifyToken from "../middleware/verify_token.js";
 import isAuthorized from "../middleware/is_authorized.js";
 import userRoles from "../utils/user_roles.js";
-
-const { getTask, getAllTasks, updateTask, createTask, deleteTask } =
-  taskContoller;
 
 const router = Router();
 
 router
   .route("/")
-  .get(getAllTasks)
+  .get(TaskController.getAll)
   .post(
-    taskValidationSchemaFunc(),
+    taskValidationSchema(),
+    validation_request,
     verifyToken,
     isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
-    createTask
+    TaskController.create
   );
 
 router
-  .route("/:taskID")
-  .get(getTask)
+  .route("/:ID")
+  .get(TaskController.getByID)
   .patch(
+    validation_request,
     verifyToken,
     isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
-    updateTask
+    TaskController.update
   )
   .delete(
     verifyToken,
     isAuthorized(userRoles.ADMIN, userRoles.MANAGER),
-    deleteTask
+    TaskController.delete
   );
 
 export default router;

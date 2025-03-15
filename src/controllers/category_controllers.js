@@ -45,7 +45,7 @@ const createCategory = async (req, res, next) => {
     return next(appError.createError(errors.array(), 400, httpStatus.FAIL));
 
   try {
-    const newCategory = await categoryServices.getAllCategories();
+    const newCategory = await categoryServices.createCategory(req.body);
     res
       .status(200)
       .json({ status: httpStatus.SUCCESS, new_category: newCategory });

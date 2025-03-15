@@ -1,5 +1,6 @@
 import httpStatus from "../utils/https_status.js";
 import appError from "../utils/app_error.js";
+import notificationService from "../services/notification_services.js";
 
 class baseTaskContoller {
   constructor(service) {
@@ -41,6 +42,11 @@ class baseTaskContoller {
     try {
       const newEntity = await this.service.create(req.body);
       res.status(200).json({ status: httpStatus.SUCCESS, data: newEntity });
+      const message = `A new task "${newEntity.title}" has been assigned to you.`;
+      await notificationService.createNotifcation(
+        newEntity.assignedTo,
+        message
+      );
     } catch (error) {
       next(appError.createError(error.message, error.status, httpStatus.ERROR));
     }
@@ -48,8 +54,11 @@ class baseTaskContoller {
 
   update = async (req, res, next) => {
     try {
+      const task = await this.service.getByID(req.params.ID);
       const updatedEntity = await this.service.update(req.params.ID, req.body);
       res.status(200).json({ status: httpStatus.SUCCESS, data: updatedEntity });
+      const message = `A new task update "${task.title}" has been changed.`;
+      await notificationService.createNotifcation(task.assignedTo, message);
     } catch (error) {
       this.handleInvalidID(error, next);
     }

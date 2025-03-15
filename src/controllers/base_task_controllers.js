@@ -43,7 +43,7 @@ class baseTaskContoller {
       const newEntity = await this.service.create(req.body);
       res.status(200).json({ status: httpStatus.SUCCESS, data: newEntity });
       const message = `A new task "${newEntity.title}" has been assigned to you.`;
-      await notificationService.createNotifcation(
+      await notificationService.createNotification(
         newEntity.assignedTo,
         message
       );
@@ -58,7 +58,7 @@ class baseTaskContoller {
       const updatedEntity = await this.service.update(req.params.ID, req.body);
       res.status(200).json({ status: httpStatus.SUCCESS, data: updatedEntity });
       const message = `A new task update "${task.title}" has been changed.`;
-      await notificationService.createNotifcation(task.assignedTo, message);
+      await notificationService.createNotification(task.assignedTo, message);
     } catch (error) {
       this.handleInvalidID(error, next);
     }

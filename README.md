@@ -55,5 +55,5 @@ git clone https://github.com/AbdelrhmanJaber/task-manager.git
 2. Install dependencies
 
 ```sh
-npm install express dotenv cors bcrypt.js jsonwebtoken mongoose express-validation nodemailer socketio  nodemon 
+npm install 
 ```

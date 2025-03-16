@@ -7,7 +7,7 @@ Designed with **Node.js, Express.js, MongoDB, WebSockets and nodemailer** using 
 ##  Features
 ✅ **User Authentication & Authorization**
 - JWT-based authentication
-- Role-based access control (Admin, Manager, User)
+- Role-based access control (Admin, Manager, Employee , Viewer)
 
 ✅ **Task Management**
 - CRUD operations for tasks and subtasks

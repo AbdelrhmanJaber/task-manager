@@ -1,6 +1,6 @@
 import notificationRepository from "../repository/notification_repository.js";
 import sendEmail from "./email_services.js";
-import { io } from "../index.js";
+import { io } from "../server.js";
 import userRepository from "../repository/user_repository.js";
 import appError from "../utils/app_error.js";
 import httpStatus from "../utils/https_status.js";

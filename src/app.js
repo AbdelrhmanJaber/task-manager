@@ -6,6 +6,7 @@ import userRouter from "./routes/user_routes.js";
 import categoryRouter from "./routes/category_routes.js";
 import subtaskRouter from "./routes/subtasks_routes.js";
 import notificationRouter from "./routes/notification_routes.js";
+import searchAndFilterRouter from "./routes/search_and_filter_routes.js";
 import https_status from "./utils/https_status.js";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use("/api/users", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/subtasks", subtaskRouter);
 app.use("/api/notification", notificationRouter);
+app.use("/api/searchAndFilter", searchAndFilterRouter);
 
 // Global error handler for not found routes
 app.all("*", (req, res) => {
